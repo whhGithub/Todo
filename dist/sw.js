@@ -1,39 +1,27 @@
-const staticAssets = [
-    '/',
-]
+let CACHE = 'cache';
 
-//登记后，就会触发install事件。service worker 脚本需要监听这个事件。
-self.addEventListener('install', async event => {
-    const cache = await caches.open('static-assets');
-    cache.addAll(staticAssets);
+self.addEventListener('install', function(evt) {
+    console.log('The service worker is being installed.');
+    evt.waitUntil(precache());
 });
 
-self.addEventListener('fetch', event => {
-    const req = event.request;
-    const url = new URL(req.url);
-
-    if (url.origin === location.origin) {
-        event.respondWith(cacheFirst(req));
-    } else {
-        event.respondWith(networkFirst(req));
-    }
-
+self.addEventListener('fetch', function(evt) {
+    console.log('The service worker is serving the asset.');
+    evt.respondWith(fromCache(evt.request));
 });
 
-
-async function cacheFirst(req) {
-    const cachedResponse = await caches.match(req);
-    return cachedResponse || fetch(req);
+function precache() {
+    return caches.open(CACHE).then(function(cache) {
+        return cache.addAll([
+            '/'
+        ]);
+    });
 }
 
-async function networkFirst(req) {
-    const cache = await caches.open('dynamic-content');
-    try {
-        const res = await fetch(req);
-        cache.put(req, res.clone());
-        return res;
-    } catch (err) {
-        const cachedResponse = await cache.match(req);
-        return cachedResponse || caches.match('./fallback.json');
-    }
+function fromCache(request) {
+    return caches.open(CACHE).then(function(cache) {
+        return cache.match(request).then(function(matching) {
+            return matching || Promise.reject('no-match');
+        });
+    });
 }
