@@ -4,6 +4,8 @@ import Archive from "../views/Archive.vue";
 
 export default VueRouter.createRouter({
     history: VueRouter.createWebHashHistory(),
+    mode: "history",
+    base: "/todo/",
     routes: [{
             path: "/",
             name: "main",

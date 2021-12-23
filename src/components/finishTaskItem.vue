@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmit } from "vue";
+import { defineProps, defineEmits } from "vue";
 import "swiper/swiper.min.css";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { NListItem, NIcon } from "naive-ui";
@@ -30,7 +30,7 @@ const props = defineProps({
     task: Object,
     taskIndex: Number,
 });
-const emit = defineEmit(["back"]);
+const emit = defineEmits(["back"]);
 
 const onTransitionEnd = (instance) => {
     const { activeIndex } = instance;

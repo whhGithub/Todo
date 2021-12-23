@@ -7,6 +7,17 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: "/todo",
+    build: {
+        // 在 outDir 中生成 manifest.json
+        manifest: true,
+        rollupOptions: {
+            // 覆盖默认的 .html 入口
+            input: 'index.html'
+        },
+        outDir: 'todo',
+        assetsPublicPath: './',
+    },
     plugins: [
         vue(),
         VitePWA({
